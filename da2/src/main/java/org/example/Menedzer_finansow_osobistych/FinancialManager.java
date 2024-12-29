@@ -1,5 +1,7 @@
 package org.example.Menedzer_finansow_osobistych;
 
+import org.example.Menedzer_finansow_osobistych.Transaction;
+
 import java.util.*;
 
 // Główna klasa FinancialManager do zarządzania finansami
@@ -20,6 +22,24 @@ public class FinancialManager {
         generateRandomData(); // Generowanie losowych danych użytkownika
         recordNameHistory(); // Zapisanie początkowego imienia do historii
         recordBalanceHistory(); // Zapisanie początkowego salda do historii
+    }
+
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else {
+                // Для Unix-подобных систем
+                Runtime.getRuntime().exec("clear");
+            }
+        }
+        catch(Exception e) {
+            // В случае ошибки просто добавляем пустые строки
+            for(int i = 0; i < 50; i++) {
+                System.out.println();
+            }
+        }
     }
 
     // Metoda generująca losowe dane
@@ -129,96 +149,130 @@ public class FinancialManager {
 
     // Główna metoda programu
     public static void main(String[] args) {
-        FinancialManager manager = new FinancialManager(); // Tworzenie obiektu managera finansów
-        Scanner scanner = new Scanner(System.in); // Tworzenie obiektu Scanner do wprowadzania danych z konsoli
-        boolean running = true; // Flaga działania programu
+        FinancialManager manager = new FinancialManager();
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
-        while (running) { // Główna pętla programu
-            System.out.println("\nPersonal Finance Manager"); // Nagłówek menu
-            System.out.println("1. Add Income");
-            System.out.println("2. Add Expense");
-            System.out.println("3. View Transactions");
-            System.out.println("4. View Balance");
-            System.out.println("5. View Unique Descriptions");
-            System.out.println("6. View Category Expenses");
-            System.out.println("7. View User Info");
-            System.out.println("8. View Name History");
-            System.out.println("9. View Balance History");
-            System.out.println("10. Change User Name");
-            System.out.println("11. Exit");
-            System.out.print("Choose an option: "); // Prośba o wybór opcji
+        String menu = "Personal Finance Manager\n" +
+                "1. Add Income\n" +
+                "2. Add Expense\n" +
+                "3. View Transactions\n" +
+                "4. View Balance\n" +
+                "5. View Unique Descriptions\n" +
+                "6. View Category Expenses\n" +
+                "7. View User Info\n" +
+                "8. View Name History\n" +
+                "9. View Balance History\n" +
+                "10. Change User Name\n" +
+                "11. Exit\n";
 
-            int choice = scanner.nextInt(); // Odczytanie wyboru użytkownika
-            scanner.nextLine(); // Pobranie znaku nowej linii
+        clearConsole();
+        System.out.println(menu);
 
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter income amount: "); // Prośba o kwotę przychodu
-                    double income = scanner.nextDouble();
-                    scanner.nextLine();
-                    System.out.print("Enter description: "); // Prośba o opis przychodu
-                    String incomeDesc = scanner.nextLine();
-                    manager.addIncome(income, incomeDesc); // Dodanie przychodu
-                    break;
+        while (running) {
+            System.out.print("Choose an option: ");
+            try {
+                int choice = Integer.parseInt(scanner.nextLine().trim());
 
-                case 2:
-                    System.out.print("Enter expense amount: "); // Prośba o kwotę wydatku
-                    double expense = scanner.nextDouble();
-                    scanner.nextLine();
-                    System.out.print("Enter category: "); // Prośba o kategorię wydatku
-                    String category = scanner.nextLine();
-                    System.out.print("Enter description: "); // Prośba o opis wydatku
-                    String expenseDesc = scanner.nextLine();
-                    manager.addExpense(expense, category, expenseDesc); // Dodanie wydatku
-                    break;
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter income amount: ");
+                        double income = Double.parseDouble(scanner.nextLine());
+                        System.out.print("Enter description: ");
+                        String incomeDesc = scanner.nextLine();
+                        manager.addIncome(income, incomeDesc);
+                        Thread.sleep(1500);
+                        break;
 
-                case 3:
-                    manager.viewTransactions(); // Wyświetlenie historii transakcji
-                    break;
+                    case 2:
+                        System.out.print("Enter expense amount: ");
+                        double expense = Double.parseDouble(scanner.nextLine());
+                        System.out.print("Enter category: ");
+                        String category = scanner.nextLine();
+                        System.out.print("Enter description: ");
+                        String expenseDesc = scanner.nextLine();
+                        manager.addExpense(expense, category, expenseDesc);
+                        Thread.sleep(1500);
+                        break;
 
-                case 4:
-                    manager.viewBalance(); // Wyświetlenie salda
-                    break;
+                    case 3:
+                        manager.viewTransactions();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 5:
-                    manager.viewUniqueDescriptions(); // Wyświetlenie unikalnych opisów
-                    break;
+                    case 4:
+                        manager.viewBalance();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 6:
-                    manager.viewCategoryExpenses(); // Wyświetlenie wydatków według kategorii
-                    break;
+                    case 5:
+                        manager.viewUniqueDescriptions();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 7:
-                    manager.viewUserInfo(); // Wyświetlenie informacji o użytkowniku
-                    break;
+                    case 6:
+                        manager.viewCategoryExpenses();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 8:
-                    manager.viewNameHistory(); // Wyświetlenie historii zmian imienia
-                    break;
+                    case 7:
+                        manager.viewUserInfo();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 9:
-                    manager.viewBalanceHistory(); // Wyświetlenie historii zmian salda
-                    break;
+                    case 8:
+                        manager.viewNameHistory();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 10:
-                    System.out.print("Enter new first name: "); // Prośba o nowe imię
-                    String newFirstName = scanner.nextLine();
-                    System.out.print("Enter new last name: "); // Prośba o nowe nazwisko
-                    String newLastName = scanner.nextLine();
-                    manager.changeUserName(newFirstName, newLastName); // Zmiana imienia użytkownika
-                    break;
+                    case 9:
+                        manager.viewBalanceHistory();
+                        System.out.print("\nPress Enter to continue...");
+                        scanner.nextLine();
+                        break;
 
-                case 11:
-                    running = false; // Zakończenie działania programu
-                    System.out.println("Exiting... Goodbye!"); // Informacja o zakończeniu
-                    break;
+                    case 10:
+                        System.out.print("Enter new first name: ");
+                        String newFirstName = scanner.nextLine();
+                        System.out.print("Enter new last name: ");
+                        String newLastName = scanner.nextLine();
+                        manager.changeUserName(newFirstName, newLastName);
+                        Thread.sleep(1500);
+                        break;
 
-                default:
-                    System.out.println("Invalid option! Please try again."); // Informacja o nieprawidłowej opcji
+                    case 11:
+                        running = false;
+                        System.out.println("Exiting... Goodbye!");
+                        break;
+
+                    default:
+                        System.out.println("Invalid option! Please try again.");
+                        Thread.sleep(1500);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number!");
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                System.out.println("Invalid input! Please try again.");
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
-
-        scanner.close(); // Zamknięcie obiektu Scanner
+        scanner.close();
     }
 }
-
